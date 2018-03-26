@@ -9,10 +9,12 @@ struct Produs{
 };
 
 typedef struct nod{
-  struct Produs p[];
+  int codProdus;
+  char numeProdus[30];
+  float pretProdus;
   int cantitateProdus;
   struct nod *urm;
-};Tnod
+}Tnod;
 
 typedef struct lista{
   Tnod *primul, *ultimul;
@@ -23,7 +25,7 @@ long numarTelefon;
 int plata, livrare;
 char ch;
 
-FILE *fproduse, *bproduse;
+FILE *fproduse, *bproduse, *favorite;
 
 void citireTabelProduseFemei(int *n, struct Produs f[])
 { int i;
@@ -120,23 +122,35 @@ void sumarComanda()
   totalPlata();
 }
 
+void initializareLista(Tlista *lista)
+{
+    lista->primul=lista->ultimul=NULL;
+    printf("Cosul de cumparaturi este gol\n");
+}
 
-void creareLista()
-
-int verificaProdus(int *n,int cod, struct Produs p[])
+int verificaProdus(int *n,int cod,char *nume,float pret,struct Produs f[],struct Produs b[])
 {
     int i;
     for(i=0;i<*n;i++)
     {
-        if(cod==f[i].codProdus||cod==b[i].codProdus)
+        if(cod==f[i].codProdus || cod==b[i].codProdus && strcmp(nume,f[i].numeProdus)==0 || strcmp(nume,b[i])==0 && pret==f[i].pretProdus || pret==b[i].pretProdus)
             return 1;
         else
             return 0;
     }
 }
+
+Tnod *cautaProdusInCos(Tlista *lista, int cod)
+{
+    Tnod *temp=lista->primul;
+    while(temp!=NULL)
+    {
+
+    }
+}
 void adaugareProduseInLista(Tlista *lista, int *n, int cod, struct Produs f[], struct Produs b[])
 {
-    Tnod *p=cautaProdusInCos;
+    Tnod *p=cautaProdusInCos(&lista,);
     if(p==NULL)
     {
         Tnod *nodNou;
@@ -148,7 +162,7 @@ void adaugareProduseInLista(Tlista *lista, int *n, int cod, struct Produs f[], s
         }
         if(ch=='f')
             if(verificaProdus(&n,cod,f))
-                if(produsExistent(&lista,cod)
+
                    {
                        printf("Produsul exista deja in cos! Doriti sa mai adaugati o bucata? [d/n]\n");
                        char optiune;
@@ -196,17 +210,71 @@ void adaugareProduseInLista(Tlista *lista, int *n, int cod, struct Produs f[], s
     }
 }
 
-void vidare(Tlista *lista)
+
+
+void adaugareProdusLaFavorite(int *n,int cod, char *nume, float pret, Tlista *lista, struct Produs f[], struct Produs b[], struct Produs p[])
 {
-    lista->primul=lista->ultimul=NULL;
-    printf("Cosul de cumparaturi este gol\n");
+    if(verificaProdus(&n,cod,&nume,pret,f,b))
+    {   favorite=fopen("favorite.txt","r+");
+        if(favorite==NULL)
+        {
+            printf("Fisierul cu produse favorite nu a putut fi accesat!\n");
+            exit(1);
+        }
+        int i,nrProduse=0;
+        char c;
+        unsigned int cantitate;
+        while((c=getch(favorite))!=EOF)
+            if(c=='\n')
+                nrProduse++;
+        for(i=0;i<nrProduse;i++)
+            {   fscanf(favorite,"%d",&p[i].codProdus);
+                fscanf(favorite,"%s",p[i].numeProdus);
+                fscanf(favorite,"%f",&p[i].pretProdus);
+            }
+        fprintf(favorite,"COD PRODUS\t NUME PRODUS\t, PRET PRODUS\n");
+        for(i=0;i<nrProduse;i++)
+            if(cod==p[i].codProdus)
+                {   printf("Doriti sa mariti cantitatea produsului cu codul %d [d/n]?",cod);
+                    if((c=getch())=='d')
+                    {   printf("Introduceti cantitatea dorita:");
+                        scanf("%d",&cantitate);
+                        marireCantitate(cod,cantitate,&lista);
+                    }
+                    printf("Doriti sa micsorati cantitatea produsului cu codul %d [d/n]?",cod);
+                    if((c=getch())=='d')
+                    {   printf("Introduceti cantitatea dorita:");
+                        scanf("%d",&cantitate);
+                        micsorareCantitate(cod,cantitate,&lista);
+                    }
+            else
+                    {   fprintf(favorite,"%3d",cod);
+                        fprintf(favorite,"%30s",nume);
+                        fprintf(favorite,"%.2f",pret);
+                    }
+                }
+    }
+
+void marireCantitate(int cod, unsigned int cantitate, Tlista *lista)
+{
+    Tnod *temp=lista->primul;
+    if(cantitate>temp->cantitateProdus)
+    {   while(temp.codProdus!=cod && temp!=NULL)
+            temp=temp->urm;
+        temp->cantitateProdus=cantitate;
+    }
 }
 
-void listaPlina()
-void stergeProdusDinLista()
-void adaugareProdusLaFavorite()
-void marireCantitate()
-void micsorareCantitate()
+void micsorareCantitate(int cod, unsigned int cantitate, Tlista *lista)
+{
+    Tnod *temp=lista->primul;
+    if(cantitate<temp->cantitateProdus)
+        {   while(temp.codProdus!=cod && temp!=NULL)
+                temp=temp->urm;
+            temp->cantitateProdus=cantitate;
+        }
+}
+
 void afisareLista()
 float totalPlata()
 
@@ -216,13 +284,12 @@ int main()
     int *n;
     struct Produs f[15];
     struct Produs b[15];
-    //vidare(&cosCumparaturi);
     citireTabelProduseFemei(&n,f);
     citireTabelProduseBarbati(&n,b);
-    unsigned short optiune;
+    unsigned short optiune,ok=1;
     printf("\t\t MENIU\n");
     printf("\t 1. Afiseaza lista cu produse\n");
-    printf("\t 2. Vidare - se initializeaza cosul de cumparaturi\n");
+    printf("\t 2. Initializare cos de cumparaturi\n");
     printf("\t 3. Adauga produs in cos\n");
     printf("\t 4. Adauga produs la favorite\n");
     printf("\t 5. Sterge produs din cos\n");
@@ -241,15 +308,18 @@ int main()
         }
         switch(optiune)
         {
-            case 1: printf("Ce lista doriti sa afisati? f-femei, b-barbati\n");
-                    scanf("%c",ch);
-                    if(tolower(ch)=='f')
-                        afisareTabelProduseFemei(&n,f);
-                    else
-                        afisareTabelProduseBarbati(&n,b);
+            case 1: initializareLista(&cosCumparaturi);
+                    ok=1;
                     break;
-            case 2: vidare(&cosCumparaturi);
-                    break;
+            case 2: if(ok)
+                        {   printf("Ce lista doriti sa afisati? f-femei, b-barbati\n");
+                            scanf("%c",ch);
+                            if(tolower(ch)=='f')
+                                afisareTabelProduseFemei(&n,f);
+                            else
+                                afisareTabelProduseBarbati(&n,b);
+                            break;
+                        }
             case 3: adaugareProduseInLista()
         }
     }
