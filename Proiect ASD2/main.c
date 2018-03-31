@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX 100
 
 struct Produs{
   int codProdus;
@@ -9,10 +8,11 @@ struct Produs{
   float pretProdus;
 };
 
-struct P{
+struct Fav{
   int codProdus;
   char numeProdus[30];
 };
+
 typedef struct nod{
   int codProdus;
   unsigned int cantitateProdus;
@@ -35,15 +35,14 @@ FILE *fproduse, *bproduse, *favorite;
 //FUNCTII PENTRU CITIRE/AFISARE PRODUSE STOC, VALIDARE ETC
 
 void citireTabelProduseFemei(struct Produs f[])
-{ int i,n;
+{ int i;
   fproduse=fopen("produseFemei.txt","r");
   if(fproduse==NULL)
     {
       printf("Fisierul cu produse pentru femei nu a putut fi deschis\n");
       exit(1);
     }
-  n=nrProduseTabel("produseFemei.txt");
-  for(i=0;i<n;i++)
+  for(i=0;i<15;i++)
     {
       fscanf(fproduse,"%d",&f[i].codProdus);
       fscanf(fproduse,"%s",f[i].numeProdus);
@@ -52,15 +51,14 @@ void citireTabelProduseFemei(struct Produs f[])
 }
 
 void citireTabelProduseBarbati(struct Produs b[])
-{ int i,n;
+{ int i;
   bproduse=fopen("produseBarbati.txt","r");
   if(bproduse==NULL)
     {
       printf("Fisierul cu produse pentru barbati nu a putut fi deschis\n");
       exit(1);
     }
-  n=nrProduseTabel("produseBarbati.txt");
-  for(i=0;i<n;i++)
+  for(i=0;i<15;i++)
     {
       fscanf(bproduse,"%d",&b[i].codProdus);
       fscanf(bproduse,"%s",b[i].numeProdus);
@@ -68,40 +66,29 @@ void citireTabelProduseBarbati(struct Produs b[])
     }
 }
 
-int nrProduseTabel(char *numeFis)
-{
-  char c;
-  int nrProduse=0;
-  while((c=getch(numeFis))!=EOF)
-            if(c=='\n')
-                nrProduse++;
-  return nrProduse;
-}
 
 void afisareTabelProduseFemei(struct Produs f[])
-{ int i,n;
-  n=nrProduseTabel("produseFemei.txt");
+{ int i;
   printf("COD PRODUS\tNUME PRODUS\tPRET PRODUS\n");
-  for(i=0;i<n;i++)
+  for(i=0;i<15;i++)
   {
-    printf("%3d\t%30s\t%.2f\n",f[i].codProdus,f[i].numeProdus,f[i].pretProdus);
+    printf("%d\t%30s\t%.2f\n",f[i].codProdus,f[i].numeProdus,f[i].pretProdus);
   }
 }
 
 void afisareTabelProduseBarbati(struct Produs b[])
-{ int i,n;
-  n=nrProduseTabel("produseBarbati.txt");
+{ int i;
   printf("COD PRODUS\tNUME PRODUS\tPRET PRODUS\n");
-  for(i=0;i<n;i++)
+  for(i=0;i<15;i++)
   {
-    printf("%3d\t%30s\t%.2f\n",b[i].codProdus,b[i].numeProdus,b[i].pretProdus);
+    printf("%d\t%30s\t%.2f\n",b[i].codProdus,b[i].numeProdus,b[i].pretProdus);
   }
 }
 
 int validareProdusFemei(int cod, struct Produs f[])
-{   int i,n;
-    n=nrProduseTabel("produseFemei.txt");
-    for(i=0;i<n;i++)
+{
+    int i;
+    for(i=0;i<15;i++)
     {
         if(cod==f[i].codProdus)
             return 1;
@@ -112,9 +99,8 @@ int validareProdusFemei(int cod, struct Produs f[])
 
 int validareProdusBarbati(int cod, struct Produs b[])
 {
-  int i,n;
-    n=nrProduseTabel("produseBarbati.txt");
-    for(i=0;i<n;i++)
+    int i;
+    for(i=0;i<15;i++)
     {
         if(cod==b[i].codProdus)
             return 1;
@@ -122,41 +108,59 @@ int validareProdusBarbati(int cod, struct Produs b[])
             return 0;
     }
 }
-void adaugareProdusLaFavorite(int cod, char *nume, struct Produs f[], struct Produs b[], struct P p[])
+
+int nrProduseFavorite()     //returneaza nr de linii(produse) din fisier
 {
-    while(!validareProdusFemei(cod,f)&&!validareProdusBarbati(cod,b))
-    {
-        printf("Codul introdus nu apartine unui produs din gama magazinului! Introduceti alt cod:\n");
-        scanf("%d",&cod);
-    }
+    char c;
+    int nrProduse=0;
+    while((c=getch(favorite))!=EOF)
+        if(c=='\n')
+            nrProduse++;
+    return nrProduse;
+}
+
+void citireProduseFavorite(struct Fav p[])
+{
     favorite=fopen("favorite.txt","a+");
     if(favorite==NULL)
     {
         printf("Fisierul cu produse favorite nu a putut fi accesat!\n");
         exit(1);
     }
-    int i,nrProduse=0;
-    char c;
-    while((c=getch(favorite))!=EOF)
-        if(c=='\n')
-            nrProduse++;
+    int i,nrProduse=nrProduseFavorite();
     for(i=0;i<nrProduse;i++)
     {
         fscanf(favorite,"%d",&p[i].codProdus);
         fscanf(favorite,"%s",p[i].numeProdus);
     }
-    fprintf(favorite,"COD PRODUS\t NUME PRODUS\t, PRET PRODUS\n");
-    for(i=0;i<nrProduse;i++)
-        if(cod!=p[i].codProdus)     //verifica daca produsul nu exista deja in lista de favorite
-            {
-                fprintf(favorite,"%d",cod);
-                fprintf(favorite,"%30s",nume);
-            }
-        else
-            printf("Produsul exista deja in lista de favorite!\n");
-    fclose(favorite);
 }
 
+void adaugareProdusLaFavorite(int cod, char *nume, struct Produs f[], struct Produs b[], struct Fav p[])
+{
+    while(!validareProdusFemei(cod,f)&&!validareProdusBarbati(cod,b))
+    {
+        printf("Codul introdus nu apartine unui produs din gama magazinului! Introduceti alt cod:\n");
+        scanf("%d",&cod);
+    }
+
+    int i, nrProduse=nrProduseFavorite();
+    for(i=0;i<nrProduse;i++)
+        {   if(cod!=p[i].codProdus)     //verifica daca produsul nu exista deja in lista de favorite
+                fprintf(favorite,"%d\t %30s\n",cod,nume);
+            else
+                printf("Produsul exista deja in lista de favorite!\n");
+        }
+}
+
+void afisareProduseFavorite(struct Fav p[])
+{
+    int i, nrProduse=nrProduseFavorite();
+    printf("COD PRODUS\t NUME PRODUS\n");
+    for(i=0;i<nrProduse;i++)
+    {
+        printf("%d\t %30s\n",p[i].codProdus, p[i].numeProdus);
+    }
+}
 
 void datePersonale()                    //citeste datele personale ale clientului
 {
@@ -174,7 +178,8 @@ void datePersonale()                    //citeste datele personale ale clientulu
 }
 
 void plataSiLivrare()                   //citeste metodele de plata/livrare dorite de client
-{ printf("Introduceti cifra corespunzatoare metodei de plata dorite:\n 1-NUMERAR/RAMBUS\n 2-ONLINE CU CARD BANCAR\n");
+{
+  printf("Introduceti cifra corespunzatoare metodei de plata dorite:\n 1-NUMERAR/RAMBUS\n 2-ONLINE CU CARD BANCAR\n");
   scanf("%d",&plata);
   while(plata!=1 && plata!=2)
     { printf("Metoda de plata inexistenta! Introduceti o alta metoda de plata\n");
@@ -256,7 +261,8 @@ void adaugareProdusInLista(Tlista *lista, int cod, char *nume, float pret, struc
                 nodNou->cantitateProdus=1;
             }
     else
-        {   printf("Optiune inexistenta! Alegeti f pentru FEMEI sau b pentru BARBATI\n");
+        {
+            printf("Optiune inexistenta! Alegeti f pentru FEMEI sau b pentru BARBATI\n");
             return 0;
         }
     if(lista->primul==NULL)                         //verifica daca exista produse in cos/lista
@@ -325,9 +331,11 @@ void adaugareProdusInLista(Tlista *lista, int cod, char *nume, float pret, struc
                         modificareCantitate(&lista,cod,cantitate);
                         printf("Aveti %d produse %s in cos\n",nodNou->cantitateProdus,nodNou->numeProdus);
                     }
+                }
             }
+        }
     }
-
+}
 
 void modificareCantitate(Tlista *lista, int cod, unsigned int cantitate)
 {
@@ -403,26 +411,29 @@ void eliberareMemorie(Tlista *lista)
 int main()
 {
     Tlista cosCumparaturi;
+    int n=nrProduseFavorite();
     struct Produs f[15];
     struct Produs b[15];
-    struct P p[MAX];
+    struct Fav p[n];
+    unsigned short optiune,ok=1;
     citireTabelProduseFemei(f);
     citireTabelProduseBarbati(b);
-    unsigned short optiune,ok=1;
+    citireProduseFavorite(p);
     printf("\t\t MENIU\n");
     printf("\t 1. Initializeaza cosul de cumparaturi\n");
     printf("\t 2. Afiseaza lista cu produse\n");
     printf("\t 3. Adauga produs in cos\n");
     printf("\t 4. Adauga produs la favorite\n");
-    printf("\t 5. Sterge produs din cos\n");
-    printf("\t 6. Afiseaza sumarul comenzii\n");
-    printf("\t 7. Goleste cosul de cumparaturi\n");
-    printf("\t 8. Procesare comanda\n");
-    printf("\t 9. Inchide aplicatia\n");
+    printf("\t 5. Afiseaza produsele favorite\n");
+    printf("\t 6. Sterge produs din cos\n");
+    printf("\t 7. Afiseaza sumarul comenzii\n");
+    printf("\t 8. Goleste cosul de cumparaturi\n");
+    printf("\t 9. Proceseaza comanda\n");
+    printf("\t 10. Inchide aplicatia\n");
     printf("Introduceti cifra corespunzatoare actiunii dorite:\n");
     scanf("%hi",&optiune);
     do{
-        while(optiune<1 || optiune>9)
+        while(optiune<1 || optiune>10)
         {
             printf("EROARE: Valoarea introdusa trebuie sa fie din intervalul [1,9]!\n");
             printf("Introduceti alta cifra corespunzatoare actiunii dorite:\n");
@@ -479,6 +490,13 @@ int main()
                     break;
             case 5: if(ok)
                       {
+                        afisareProduseFavorite(p);
+                      }
+                    else
+                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                    break;
+            case 6: if(ok)
+                      {
                         int cod;
                         printf("Introduceti codul produsului pe care doriti sa-l stergeti din cosul de cumparaturi:\n");
                         scanf("%",&cod);
@@ -488,7 +506,7 @@ int main()
                     else
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
-            case 6: if(ok)
+            case 7: if(ok)
                       {
                         calculPret(&cosCumparaturi);
                         datePersonale();
@@ -501,7 +519,7 @@ int main()
                     else
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
-            case 7: if(ok)
+            case 8: if(ok)
                       {
                           eliberareMemorie(&cosCumparaturi);
                           printf("Cosul de cumparaturi a fost golit! Reinitializati-l pentru o comanda noua\n");
@@ -509,7 +527,7 @@ int main()
                     else
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
-            case 8: if(ok)
+            case 9: if(ok)
                       {
                           eliberareMemorie(&cosCumparaturi);
                           printf("Comanda a fost procesata! Reinitializati cosul de cumparaturi pentru a plasa o noua comanda\n");
@@ -517,12 +535,9 @@ int main()
                     else
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
-            case 9: exit(1);
-                    printf("Rularea aplicatiei a fost oprita\n");
+            case 10: exit(1);
+                     printf("Rularea aplicatiei a fost oprita\n");
         }
-    }while(optiune!=9);
-}
-}
-}
+    }while(optiune!=10);
 }
 
