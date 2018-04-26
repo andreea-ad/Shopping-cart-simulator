@@ -1,36 +1,35 @@
-15
 100
-LADIES' TOP
+LADIES_TOP
 129.90
 101
-Hanorac cu gluga 
+Hanorac_cu_gluga 
 99.90
 102
-LADIES' DRESS
+LADIES_DRESS
 249.90
 103
-Blugi boyfriend
+Blugi_boyfriend
 159.90
 104
-Pantaloni eleganti
+Pantaloni_eleganti
 129.90
 105
-Bluza din piele intoarsa eco
+Bluza_din_piele_intoarsa_eco
 49.90
 106
-Fusta in carouri
+Fusta_in_carouri
 59.90
 107
-Bluza cu volan
+Bluza_cu_volan
 79.90
 108
-Chimonou din satin cu flori
+Chimonou_din_satin_cu_flori
 229.90
 109
-Palton cu brau din talie
+Palton_cu_brau_din_talie
 179.90
 110
-Rochie in dungi
+Rochie_in_dungi
 99.90
 111
 Pulover cu maneca scurta
