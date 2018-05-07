@@ -69,10 +69,10 @@ void citireTabelProduseBarbati(struct Produs b[])
 
 void afisareTabelProduseFemei(struct Produs f[])
 { int i;
-  printf("COD PRODUS\tNUME PRODUS\tPRET PRODUS\n");
+  printf("COD PRODUS\tNUME PRODUS\t\t\tPRET PRODUS\n");
   for(i=0;i<15;i++)
   {
-    printf("%d\t\t%s\t%20.2f\n",f[i].codProdus,f[i].numeProdus,f[i].pretProdus);
+    printf("%d\t\t%-30s\t%.2f\n",f[i].codProdus,f[i].numeProdus,f[i].pretProdus);
   }
 }
 
@@ -148,7 +148,7 @@ void adaugareProdusLaFavorite(int cod, char *nume, struct Produs f[], struct Pro
         {   if(cod!=p[i].codProdus)     //verifica daca produsul nu exista deja in lista de favorite
                 fprintf(favorite,"%d\t %s\n",cod,nume);
             else
-                {	
+                {
                 	printf("Produsul exista deja in lista de favorite!\n");
             		break;
             	}
@@ -168,14 +168,14 @@ void afisareProduseFavorite(struct Fav p[])
 void datePersonale()                    //citeste datele personale ale clientului
 {
   printf("Introduceti numele dumneavoastra\n");
+  scanf("%*c");
   fgets(nume,15,stdin);
-  fflush(stdin);
   printf("Introduceti prenumele dumneavoastra\n");
+  scanf("%*c");
   fgets(prenume,15,stdin);
-  fflush(stdin);
   printf("Introduceti adresa de livrare\n");
+  scanf("%*c");
   fgets(adresa,30,stdin);
-  fflush(stdin);
   printf("Introduceti numarul dumneavoastra de telefon\n");
   scanf("%ld",&numarTelefon);
 }
@@ -428,13 +428,14 @@ int main()
     printf("\t 4. Adauga produs la favorite\n");
     printf("\t 5. Afiseaza produsele favorite\n");
     printf("\t 6. Sterge produs din cos\n");
-    printf("\t 7. Afiseaza sumarul comenzii\n");
-    printf("\t 8. Goleste cosul de cumparaturi\n");
-    printf("\t 9. Proceseaza comanda\n");
-    printf("\t 10. Inchide aplicatia\n");
-    printf("Introduceti cifra corespunzatoare actiunii dorite:\n");
-    scanf("%hi",&optiune);
+    printf("\t 7. Afiseaza produsele adaugate in cos\n");
+    printf("\t 8. Afiseaza sumarul comenzii\n");
+    printf("\t 9. Goleste cosul de cumparaturi\n");
+    printf("\t 10. Proceseaza comanda\n");
+    printf("\t 11. Inchide aplicatia\n");
     do{
+    	printf("Introduceti cifra corespunzatoare actiunii dorite:\n");
+    	scanf("%hi",&optiune);
         while(optiune<1 || optiune>10)
         {
             printf("EROARE: Valoarea introdusa trebuie sa fie din intervalul [1,9]!\n");
@@ -469,7 +470,8 @@ int main()
                         printf("Introduceti codul produsului:\n");
                         scanf("%d",&cod);
                         printf("Introduceti denumirea produsului:\n");
-                        fgets(denumire,15,stdin);
+                        scanf("%*c");
+                        fgets(denumire,30,stdin);
                         printf("Introduceti pretul produsului:\n");
                         scanf("%f",&pret);
                         adaugareProdusInLista(&cosCumparaturi,cod,&denumire,pret,f,b);
@@ -511,6 +513,11 @@ int main()
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
             case 7: if(ok)
+                        afisareLista(cosCumparaturi);
+                    else
+                        printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                    break;
+            case 8: if(ok)
                       {
                         calculPret(&cosCumparaturi);
                         datePersonale();
@@ -523,7 +530,7 @@ int main()
                     else
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
-            case 8: if(ok)
+            case 9: if(ok)
                       {
                           eliberareMemorie(&cosCumparaturi);
                           printf("Cosul de cumparaturi a fost golit! Reinitializati-l pentru o comanda noua\n");
@@ -531,7 +538,7 @@ int main()
                     else
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
-            case 9: if(ok)
+            case 10: if(ok)
                       {
                           eliberareMemorie(&cosCumparaturi);
                           printf("Comanda a fost procesata! Reinitializati cosul de cumparaturi pentru a plasa o noua comanda\n");
@@ -539,9 +546,9 @@ int main()
                     else
                       printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
                     break;
-            case 10: exit(1);
+            case 11: exit(1);
                      printf("Rularea aplicatiei a fost oprita\n");
         }
-    }while(optiune!=10);
+    }while(optiune!=11);
 }
 

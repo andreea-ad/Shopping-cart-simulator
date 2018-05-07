@@ -32,17 +32,15 @@ Palton_cu_brau_din_talie
 Rochie_in_dungi
 99.90
 111
-Pulover cu maneca scurta
+Pulover_cu_maneca_scurta
 49.90
 112
-Bluza cold shoulder
+Bluza_cold_shoulder
 99.90
 113
-Fusta cu pliuri
+Fusta_cu_pliuri
 139.90
 114
-Pantaloni de catifea cord Culottes
+Pantaloni_de_catifea
 129.90
-115
-Geaca parka oversize
-229.90
+
