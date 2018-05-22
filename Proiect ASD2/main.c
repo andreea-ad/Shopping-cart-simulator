@@ -8,25 +8,25 @@ struct Produs{
   float pretProdus;
 };
 
-typedef struct Anod{                //nod arbore binar de cautare
+/*typedef struct Anod{                //nod arbore binar de cautare
   int codProdus;
   struct Anod *st;
   struct Anod *dr;
-}Snod;
+}Snod;*/
 
-typedef struct Lnod{                 //nod lista simplu inlantuita
+typedef struct nod{                 //nod lista simplu inlantuita
   int codProdus;
   unsigned int cantitateProdus;
   char numeProdus[30];
   float pretProdus, pretTotal;
-  struct Lnod *urm;
+  struct nod *urm;
 }Tnod;
 
 typedef struct lista{
   Tnod *primul, *ultimul;
 }Tlista;
 
-Snod *nodCrt;
+//Snod *nodCrt;
 char nume[15], prenume[15], adresa[30];
 long numarTelefon;
 int plata, livrare, tip;
@@ -36,7 +36,7 @@ FILE *fproduse, *bproduse;
 
 //FUNCTII PENTRU CITIRE/AFISARE PRODUSE STOC, VALIDARE ETC
 
-void citireTabelProduseFemei(struct Produs f[])
+void citireTabelProduseFemei(struct Produs f[])                         //citeste produsele pentru femei din fisier
 { int i;
   fproduse=fopen("produseFemei.txt","r");
   if(fproduse==NULL)
@@ -52,7 +52,7 @@ void citireTabelProduseFemei(struct Produs f[])
     }
 }
 
-void citireTabelProduseBarbati(struct Produs b[])
+void citireTabelProduseBarbati(struct Produs b[])                         //citeste produsele pentru barbati din fisier
 { int i;
   bproduse=fopen("produseBarbati.txt","r");
   if(bproduse==NULL)
@@ -69,7 +69,7 @@ void citireTabelProduseBarbati(struct Produs b[])
 }
 
 
-void afisareTabelProduseFemei(struct Produs f[])
+void afisareTabelProduseFemei(struct Produs f[])                            //afiseaza un tabel cu produsele citite pentru femei
 { int i;
   printf("COD PRODUS\tNUME PRODUS\t\t\tPRET PRODUS\n");
   for(i=0;i<15;i++)
@@ -78,7 +78,7 @@ void afisareTabelProduseFemei(struct Produs f[])
   }
 }
 
-void afisareTabelProduseBarbati(struct Produs b[])
+void afisareTabelProduseBarbati(struct Produs b[])                         //afiseaza un tabel cu produsele citite pentru barbati
 { int i;
   printf("COD PRODUS\tNUME PRODUS\t\t\tPRET PRODUS\n");
   for(i=0;i<15;i++)
@@ -89,14 +89,14 @@ void afisareTabelProduseBarbati(struct Produs b[])
 
 void datePersonale()                    //citeste datele personale ale clientului
 {
-  printf("Introduceti numele dumneavoastra\n");
+  printf("Introduceti numele dumneavoastra:\n");
   scanf("%*c");
   fgets(nume,15,stdin);
-  printf("Introduceti prenumele dumneavoastra\n");
+  printf("Introduceti prenumele dumneavoastra:\n");
   fgets(prenume,15,stdin);
-  printf("Introduceti adresa de livrare\n");
+  printf("Introduceti adresa de livrare:\n");
   fgets(adresa,30,stdin);
-  printf("Introduceti numarul dumneavoastra de telefon\n");
+  printf("Introduceti numarul dumneavoastra de telefon:\n");
   scanf("%ld",&numarTelefon);
 }
 
@@ -105,21 +105,21 @@ void plataSiLivrare()                   //citeste metodele de plata/livrare dori
   printf("Introduceti cifra corespunzatoare metodei de plata dorite:\n 1-NUMERAR/RAMBUS\n 2-ONLINE CU CARD BANCAR\n");
   scanf("%d",&plata);
   while(plata!=1 && plata!=2)
-    { printf("Metoda de plata inexistenta! Introduceti o alta metoda de plata\n");
+    { printf("Metoda de plata inexistenta! Introduceti o alta metoda de plata.\n");
       scanf("%d",&plata);
     }
   printf("Introduceti cifra corespunzatoare metodei de livrare dorite:\n 1-CURIER(15.99 lei)\n 2-POSTA(9.99 lei)\n");
   scanf("%d",&livrare);
   while(livrare!=1 && livrare!=2)
-    { printf("Metoda de livrare inexistenta! Introduceti o alta metoda de livrare\n");
+    { printf("Metoda de livrare inexistenta! Introduceti o alta metoda de livrare.\n");
       scanf("%d",&livrare);
     }
 }
 
 void sumarComanda()                   //afiseaza datele de contact ale clientului si optiunile de plata/livrare
 {
-  printf("\t\t\tSUMAR COMANDA\n");
-  printf("DATE PERSONALE CLIENT:\nNUME:%s\nPRENUME:%s\nADRESA LIVRARE:%s\nNUMAR DE TELEFON:%ld\n",nume, prenume, adresa, numarTelefon);
+  printf("\t\t\t\t\t\tSUMAR COMANDA\n");
+  printf("DATE PERSONALE CLIENT:\nNUME: %s\nPRENUME: %s\nADRESA LIVRARE: %s\nNUMAR DE TELEFON: 0%ld\n",nume, prenume, adresa, numarTelefon);
   switch(plata)
   { case 1: printf("Metoda de plata: NUMERAR/RAMBUS\n");
             break;
@@ -136,7 +136,7 @@ void sumarComanda()                   //afiseaza datele de contact ale clientulu
 }
 
 //FUNCTII PENTRU ARBORE
-
+/*
 void inserareInArbore(Snod *nod,int cod)                     //insereaza nodul cu codul dat in arbore
 {
     if(nod)
@@ -184,139 +184,110 @@ void construireArbore(Tlista lista)
         temp=temp->urm;
     }
 }
+*/
+
 
 //FUNCTII PENTRU LISTA
 
-void initializareLista(Tlista *lista)
+void initializareLista(Tlista *lista)               //initializeaza primul si ultimul nod al listei cu NULL
 {
     lista->primul=lista->ultimul=NULL;
 }
-
-Tnod *cautaProdusInCos(Tlista *lista, char *denumire)
+void esteNull(Tnod *x)                              //verifica daca un nod este nul
 {
-    Tnod *temp=lista->primul;
-    while(temp!=NULL)
+    if (x == NULL)
     {
-         printf("ABC");
-         if(strcmp(temp->numeProdus,denumire)==0)     //cauta produsul in cos in functie de numele introdus(daca exista, returneaza nodul aferent)
+        printf("\nEROARE ALOCARE MEMORIE!\n");
+        system("pause");
+        exit(0);
+    }
+}
+
+Tnod *cautaProdusInLista(Tlista *lista, char *nume)            //cauta produsul cu numele dat in lista
+{
+    Tnod *temp = lista->primul;
+    while (temp)
+    {
+        if (strcmp(nume, temp->numeProdus) == 0)
             return temp;
-         temp=temp->urm;
+        temp = temp->urm;
     }
     return NULL;
 }
 
-int adaugareProdusInLista(Tlista *lista, int cod, char *nume, float pret)
+int adaugaProdusInLista(Tlista *lista, int cod, char *denumire, float pret)     //adauga produsul cu codul, denumirea si pretul date in lista
 {
-    Tnod *nodNou;
-    nodNou=(Tnod *)malloc(sizeof(Tnod));            //aloca memorie pentru produsul(nodul) curent
-    if(nodNou==NULL)
+    Tnod *adr = cautaProdusInLista(lista, denumire);
+    if (adr == NULL)
     {
-        printf("EROARE ALOCARE MEMORIE\n");
-        exit(1);
-    }
-    if(lista->primul==NULL)                         //verifica daca exista produse in cos si daca nu exista, adauga produsul curent in primul nod
-        {
-            nodNou->codProdus=cod;
-            strcpy(nodNou->numeProdus,nume);
-            nodNou->pretProdus=pret;
-            nodNou->pretTotal=pret;
-            nodNou->cantitateProdus=1;
-            lista->primul=nodNou;
-            nodNou->urm=NULL;
+        Tnod *NewNod;
+        NewNod = (Tnod *)malloc(sizeof(Tnod));
+        esteNull(NewNod);
+        NewNod->codProdus=cod;
+        NewNod->cantitateProdus=1;
+        strcpy(NewNod->numeProdus,denumire);
+        NewNod->pretProdus=pret;
+        NewNod->pretTotal=pret;
+        NewNod->urm = NULL;
+        if (lista->primul == NULL)                                 //lista este goala
+        {   lista->primul = lista->ultimul = NewNod;
+            return 1;
         }
-    else
+        else if(lista->primul->codProdus > cod)                   //adaugare in fata
         {
-            //Tnod *temp=cautaProdusInCos(&lista,nume);
-            if(!cautare(nodCrt,cod))                              //produsul curent nu exista in cos si va fi adaugat la final
-                {
-                    nodNou=lista->primul;
-                    while(nodNou)
-                        nodNou=nodNou->urm;
-                    nodNou->codProdus=cod;
-                    strcpy(nodNou->numeProdus,nume);
-                    nodNou->pretProdus=pret;
-                    nodNou->pretTotal=pret;
-                    nodNou->cantitateProdus=1;
-                    nodNou->urm=NULL;
+            NewNod->urm = lista->primul;
+            lista->primul = NewNod;
+            return 1;
+        }
+        else if (lista->ultimul->codProdus < cod)                //adaugare la sfarsit
+        {
+            lista->ultimul->urm = NewNod;
+            lista->ultimul = NewNod;
+            return 1;
+        }
+        else                                                    //adaugare la mijloc
+        {
+            Tnod *temp = lista->primul, *prev;
+            while (temp != NULL && temp->codProdus > cod)
+            {
+                prev = temp;
+                temp = temp->urm;
+            }
+            NewNod->urm = temp;
+            prev->urm = NewNod;
+            return 1;
+        }
+    }
+    else                                                                             //produsul/nodul exista in lista si se modifica cantitatea daca este dorit
+        {
+            printf("Produsul exista deja in cos! Doriti sa modificati cantitatea acestuia? 1-DA, 2-NU.\n");
+            int optiune;
+            scanf(" %d",&optiune);
+            while(optiune!=1&&optiune!=2)
+            {
+                printf("Optiunea introdusa este invalida!\n Introduceti optiunea 1 pentru DA si optiunea 2 pentru NU.\n");
+                scanf(" %d",&optiune);
+            }
+                if(optiune==1)
+                {   int cantitate;
+                    printf("Introduceti cantitatea dorita:\n");
+                    scanf(" %d",&cantitate);
+                    while(cantitate<=0 || cantitate>100)
+                    {
+                        printf("Cantitatea introdusa trebuie sa fie din intervalul (0,100]\n Introduceti alta cantitate:");
+                        scanf(" %d",&cantitate);
+                    }
+                    adr->cantitateProdus=cantitate;
+                    adr->pretTotal=adr->cantitateProdus*adr->pretProdus;
                     return 1;
                 }
-            else                                        //produsul curent exista in cos si cantitatea acestuia se poate mari/micsora daca este de dorit
-                {
-                    printf("Produsul exista deja in cos! Doriti sa mariti cantitatea acestuia? 1-DA,2-NU\n");
-                    int optiune;
-                    scanf("%d",&optiune);
-                    if(optiune==1)
-                        {
-                            int cantitate;
-                            printf("Introduceti cantitatea dorita:\n");
-                            scanf("%d",&cantitate);
-                            if(cantitate>0 && cantitate>nodNou->cantitateProdus)    //verifica daca cantitatea dorita este o valoare pozitiva mai mica decat cantitatea actuala
-                                {
-                                    modificareCantitate(&lista,cod,cantitate);
-                                    nodNou->pretTotal=cantitate*nodNou->pretProdus;
-                                    printf("Aveti %d produse %s in cos\n",nodNou->cantitateProdus,nodNou->numeProdus);
-                                }
-                            else
-                                {
-                                    while(cantitate<0 || cantitate<nodNou->cantitateProdus)
-                                        {
-                                            printf("Cantitatea introdusa nu este valida! Introduceti alta valoare mai mare decat %d\n",nodNou->cantitateProdus);
-                                            scanf("%d",&cantitate);
-                                        }
-                                    modificareCantitate(&lista,cod,cantitate);
-                                    nodNou->pretTotal=cantitate*nodNou->pretProdus;
-                                    printf("Aveti %d produse %s in cos\n",nodNou->cantitateProdus,nodNou->numeProdus);
-                                }
-                            return 1;
-                        }
-                    else
-                        {
-                            printf("Doriti sa micsorati cantitatea produsului? 1-DA,2-NU\n");
-                            scanf("%d",&optiune);
-                            if(optiune==1)
-                                {
-                                    int cantitate;
-                                    printf("Introduceti cantitatea dorita:\n");
-                                    scanf("%d",&cantitate);
-                                    if(cantitate>=0 && cantitate<nodNou->cantitateProdus)   //verifica daca cantitatea dorita este pozitiva si mai mica decat cantitatea actuala
-                                        {
-                                            modificareCantitate(&lista,cod,cantitate);
-                                            nodNou->pretTotal=cantitate*nodNou->pretProdus;
-                                            printf("Aveti %d produse %s in cos\n",nodNou->cantitateProdus,nodNou->numeProdus);
-                                        }
-                                    else
-                                        {
-                                            while(cantitate<0 || cantitate>nodNou->cantitateProdus)
-                                                {
-                                                    printf("Cantitatea introdusa nu este valida! Introduceti alta valoare din intervalul [0,%d):",nodNou->cantitateProdus);
-                                                    scanf("%d",&cantitate);
-                                                }
-                                            modificareCantitate(&lista,cod,cantitate);
-                                            nodNou->pretTotal=cantitate*nodNou->pretProdus;
-                                            printf("Aveti %d produse %s in cos\n",nodNou->cantitateProdus,nodNou->numeProdus);
-                                        }
-                                    return 1;
-                                }
-                            else
-                            {
-                                printf("Produsul cu codul %d nu a fost adaugat in cosul de cumparaturi!\n",cod);
-                                return 0;
-                            }
-                        }
-                }
+                else if(optiune==2)
+                    return 0;
         }
+    return 0;
 }
 
-void modificareCantitate(Tlista *lista, int cod, int cantitate)
-{
-    Tnod *temp=lista->primul;
-    while(temp->codProdus!=cod && temp)
-            temp=temp->urm;
-    temp->cantitateProdus=cantitate;
-}
-
-
-int stergereProdusDinLista(Tlista *lista, int cod)
+int stergereProdusDinLista(Tlista *lista, int cod)                                      //cauta un nod dupa cod si sterge daca il gaseste in lista
 {
     Tnod *c, *a;
     c=lista->primul;
@@ -340,19 +311,10 @@ int stergereProdusDinLista(Tlista *lista, int cod)
             return 1;
         }
     }
+    return 0;
 }
 
-void calculPret(Tlista *lista)
-{
-    Tnod *temp=lista->primul;
-    while(temp)
-    {
-        temp->pretTotal=temp->pretProdus*temp->cantitateProdus;
-        temp=temp->urm;
-    }
-}
-
-float totalPlata(Tlista lista)
+float totalPlata(Tlista lista)                                      //aduna toate variabilele pretTotal din lista si calculeaza suma de plata
 {
     float sumaTotala=0;
     Tnod *temp=lista.primul;
@@ -364,18 +326,18 @@ float totalPlata(Tlista lista)
     return sumaTotala;
 }
 
-void afisareLista(Tlista lista)
+void afisareLista(Tlista lista)                                                 //afiseaza toate nodurile din lista
 {
     Tnod *temp=lista.primul;
-    printf("COD PRODUS\tNUME PRODUS\t\t\tCANTITATE PRODUS\t PRET TOTAL PRODUS\n");
+    printf("COD PRODUS\tCANTITATE PRODUS\tPRET TOTAL PRODUS\tNUME PRODUS\n");
     while(temp)
     {
-        printf("%d\t\t%s\t\t\t%d\t%.2f\n",temp->codProdus,temp->numeProdus,temp->cantitateProdus,temp->pretTotal);
+        printf("%d\t\t%d\t\t\t%0.2f\t\t\t%10s\n",temp->codProdus,temp->cantitateProdus,temp->pretTotal, temp->numeProdus);
         temp=temp->urm;
     }
 }
 
-void eliberareMemorie(Tlista *lista)
+void eliberareMemorie(Tlista *lista)                                            //sterge fiecare nod din lista
 {
     Tnod *temp;
     while(temp=lista->primul)
@@ -391,47 +353,54 @@ int main()
     Tlista cosCumparaturi;
     struct Produs f[15];
     struct Produs b[15];
-    int optiune,ok=0;
+    int optiune,ok=0,ok1=0,ok2=0;
     citireTabelProduseFemei(f);
     citireTabelProduseBarbati(b);
     do{
         printf("\n\n");
-        printf("\t\t MENIU\n");
-        printf("\t 1. Initializeaza cosul de cumparaturi\n");
-        printf("\t 2. Afiseaza lista cu produse disponibile\n");
-        printf("\t 3. Adauga produs in cos\n");
-        printf("\t 4. Sterge produs din cos\n");
-        printf("\t 5. Afiseaza produsele adaugate in cos\n");
-        printf("\t 6. Afiseaza sumarul comenzii\n");
-        printf("\t 7. Goleste cosul de cumparaturi\n");
-        printf("\t 8. Proceseaza comanda\n");
-        printf("\t 9. Inchide aplicatia\n");
+        printf("====================================================================================================================\n");
+        printf("\t\t\t\t\t\t MENIU\n");
+        printf("\t\t\t 1. Initializeaza cosul de cumparaturi\n");
+        printf("\t\t\t 2. Afiseaza lista cu produse disponibile\n");
+        printf("\t\t\t 3. Adauga produs in cos\n");
+        printf("\t\t\t 4. Sterge produs din cos\n");
+        printf("\t\t\t 5. Afiseaza produsele adaugate in cos\n");
+        printf("\t\t\t 6. Introdu datele de contact si preferintele pentru livrare/plata\n");
+        printf("\t\t\t 7. Afiseaza sumarul comenzii\n");
+        printf("\t\t\t 8. Goleste cosul de cumparaturi\n");
+        printf("\t\t\t 9. Proceseaza comanda\n");
+        printf("\t\t\t 10. Inchide aplicatia\n");
+        printf("====================================================================================================================\n");
         printf("\n\n");
     	printf("Introduceti cifra corespunzatoare actiunii dorite:\n");
     	scanf("%d",&optiune);
-        while(optiune<1 || optiune>9)
+        while(optiune<1 || optiune>10)
         {
-            printf("EROARE: Valoarea introdusa trebuie sa fie din intervalul [1,9]!\n");
-            printf("Introduceti alta cifra corespunzatoare actiunii dorite:\n");
-            scanf("%d",&optiune);
+            printf("EROARE: Valoarea introdusa trebuie sa fie din intervalul [1,9]!\n Introduceti alta cifra corespunzatoare actiunii dorite:\n");
+            scanf(" %d",&optiune);
         }
         switch(optiune)
         {
             case 1: initializareLista(&cosCumparaturi);
-                    printf("Cosul de cumparaturi este gol\n");
+                    printf("Cosul de cumparaturi este gol.\n");
                     ok=1;
                     break;
             case 2: if(ok)
-                      {  printf("Ce lista doriti sa afisati? 1-femei, 2-barbati\n");
+                      {  printf("Ce lista doriti sa afisati? 1-femei, 2-barbati.\n");
                          int tip;
                          scanf("%d",&tip);
+                         while(tip!=1&&tip!=2)
+                         {
+                             printf("Optiunea introdusa este invalida! Introduceti 1 pentru a afisa lista cu produse pentru femei si 2 pentru a afisa lista cu produse pentru barbati.\n");
+                             scanf(" %d",&tip);
+                         }
                          if(tip==1)
                               afisareTabelProduseFemei(f);
                          else
                               afisareTabelProduseBarbati(b);
                       }
                     else
-                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
                     break;
             case 3: if(ok)
                     {
@@ -445,62 +414,76 @@ int main()
                         fgets(denumire,30,stdin);
                         printf("Introduceti pretul produsului:\n");
                         scanf("%f",&pret);
-                        construireArbore(cosCumparaturi);
-                        if(adaugareProdusInLista(&cosCumparaturi,cod,&denumire,pret))
-                            printf("Produsul cu codul %d a fost adaugat cu succes in cos!\n",cod);
+                        //construireArbore(cosCumparaturi);
+                        if(adaugaProdusInLista(&cosCumparaturi,cod,denumire,pret))
+                            {   printf("Produsul cu codul %d a fost adaugat cu succes in cos!\n",cod);
+                                ok2=1;
+                            }
                     }
                     else
-                        printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                        printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
                     break;
             case 4: if(ok)
                       {
                         int cod;
                         printf("Introduceti codul produsului pe care doriti sa-l stergeti din cosul de cumparaturi:\n");
-                        scanf("%d",&cod);
+                        scanf(" %d",&cod);
                         if(stergereProdusDinLista(&cosCumparaturi,cod))
-                            printf("Produsul cu codul %d a fost sters cu succes din cosul de cumparaturi\n",cod);
+                            printf("Produsul cu codul %d a fost sters cu succes din cosul de cumparaturi!\n",cod);
                       }
                     else
-                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
                     break;
             case 5: if(ok)
                         afisareLista(cosCumparaturi);
                     else
-                        printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                        printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
                     break;
             case 6: if(ok)
+                        {
+                            datePersonale();
+                            plataSiLivrare();
+                            ok1=1;
+                        }
+                    else
+                        printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
+                    break;
+            case 7: if(ok&&ok1)
                       {
-                        calculPret(&cosCumparaturi);
-                        datePersonale();
-                        plataSiLivrare();
                         sumarComanda();
                         printf("Produsele adaugate in cos sunt:\n");
                         afisareLista(cosCumparaturi);
                         printf("TOTAL PLATA: %.2f\n",totalPlata(cosCumparaturi));
                       }
-                    else
-                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
-                    break;
-            case 7: if(ok)
-                      {
-                          eliberareMemorie(&cosCumparaturi);
-                          printf("Cosul de cumparaturi a fost golit! Reinitializati-l pentru o comanda noua\n");
-                      }
-                    else
-                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                    else if(ok==0)
+                        printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
+                    else if(ok1==0)
+                        printf("Datele de contact nu au fost introduse! Alegeti optiunea 6.\n");
                     break;
             case 8: if(ok)
                       {
                           eliberareMemorie(&cosCumparaturi);
-                          printf("Comanda a fost procesata! Reinitializati cosul de cumparaturi pentru a plasa o noua comanda\n");
+                          printf("Cosul de cumparaturi a fost golit! Reinitializati-l pentru o comanda noua.\n");
                       }
                     else
-                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1\n");
+                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
                     break;
-            case 9: exit(1);
-                    printf("Rularea aplicatiei a fost oprita\n");
+            case 9: if(ok&&ok1&&ok2)
+                      {
+                          eliberareMemorie(&cosCumparaturi);
+                          printf("Comanda a fost procesata! Reinitializati cosul de cumparaturi pentru a plasa o noua comanda.\n");
+                      }
+                    else if(ok==0)
+                      printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
+                    else if(ok1==0)
+                      printf("Datele de contact nu au fost introduse! Alegeti optiunea 6.\n");
+                    else if(ok2==0)
+                      printf("Nu exista produse adaugate in cos! Alegeti optiunea 3 pentru a adauga produse in cos.\n");
                     break;
+            case 10: exit(1);
+                     printf("Rularea aplicatiei a fost oprita.\n");
+                     break;
         }
-    }while(optiune>0 && optiune<10);
+    }while(optiune>=1 && optiune<=10);
 }
 
