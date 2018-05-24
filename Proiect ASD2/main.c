@@ -8,12 +8,6 @@ struct Produs{
   float pretProdus;
 };
 
-/*typedef struct Anod{                //nod arbore binar de cautare
-  int codProdus;
-  struct Anod *st;
-  struct Anod *dr;
-}Snod;*/
-
 typedef struct nod{                 //nod lista simplu inlantuita
   int codProdus;
   unsigned int cantitateProdus;
@@ -26,10 +20,10 @@ typedef struct lista{
   Tnod *primul, *ultimul;
 }Tlista;
 
-//Snod *nodCrt;
-char nume[15], prenume[15], adresa[30];
+char nume[20], prenume[20], adresa[30];
 long numarTelefon;
-int plata, livrare, tip;
+int plata, livrare, tip, dim;
+float pretLivrare, sumeHeap[100];
 
 FILE *fproduse, *bproduse;
 
@@ -71,7 +65,7 @@ void citireTabelProduseBarbati(struct Produs b[])                         //cite
 
 void afisareTabelProduseFemei(struct Produs f[])                            //afiseaza un tabel cu produsele citite pentru femei
 { int i;
-  printf("COD PRODUS\tNUME PRODUS\t\t\tPRET PRODUS\n");
+  printf("COD PRODUS\tNUME PRODUS\t\t\tPRET PRODUS(RON)\n");
   for(i=0;i<15;i++)
   {
     printf("%d\t\t%-30s\t%.2f\n",f[i].codProdus,f[i].numeProdus,f[i].pretProdus);
@@ -80,7 +74,7 @@ void afisareTabelProduseFemei(struct Produs f[])                            //af
 
 void afisareTabelProduseBarbati(struct Produs b[])                         //afiseaza un tabel cu produsele citite pentru barbati
 { int i;
-  printf("COD PRODUS\tNUME PRODUS\t\t\tPRET PRODUS\n");
+  printf("COD PRODUS\tNUME PRODUS\t\t\tPRET PRODUS(RON)\n");
   for(i=0;i<15;i++)
   {
     printf("%d\t\t%-30s\t%.2f\n",b[i].codProdus,b[i].numeProdus,b[i].pretProdus);
@@ -91,9 +85,9 @@ void datePersonale()                    //citeste datele personale ale clientulu
 {
   printf("Introduceti numele dumneavoastra:\n");
   scanf("%*c");
-  fgets(nume,15,stdin);
+  fgets(nume,20,stdin);
   printf("Introduceti prenumele dumneavoastra:\n");
-  fgets(prenume,15,stdin);
+  fgets(prenume,20,stdin);
   printf("Introduceti adresa de livrare:\n");
   fgets(adresa,30,stdin);
   printf("Introduceti numarul dumneavoastra de telefon:\n");
@@ -108,7 +102,7 @@ void plataSiLivrare()                   //citeste metodele de plata/livrare dori
     { printf("Metoda de plata inexistenta! Introduceti o alta metoda de plata.\n");
       scanf("%d",&plata);
     }
-  printf("Introduceti cifra corespunzatoare metodei de livrare dorite:\n 1-CURIER(15.99 lei)\n 2-POSTA(9.99 lei)\n");
+  printf("Introduceti cifra corespunzatoare metodei de livrare dorite:\n 1-CURIER(15.99 RON)\n 2-POSTA(9.99 RON)\n");
   scanf("%d",&livrare);
   while(livrare!=1 && livrare!=2)
     { printf("Metoda de livrare inexistenta! Introduceti o alta metoda de livrare.\n");
@@ -129,63 +123,13 @@ void sumarComanda()                   //afiseaza datele de contact ale clientulu
 
   switch(livrare)
   { case 1: printf("Metoda de livrare: CURIER\n");
+            pretLivrare=15.99;
             break;
     case 2: printf("Metoda de livrare: POSTA\n");
+            pretLivrare=9.99;
             break;
   }
 }
-
-//FUNCTII PENTRU ARBORE
-/*
-void inserareInArbore(Snod *nod,int cod)                     //insereaza nodul cu codul dat in arbore
-{
-    if(nod)
-        {   if(nod->codProdus==cod)
-                printf("Codul exista deja in arbore!\n");
-            else
-                {
-                    if(nod->codProdus<cod)
-                        inserareInArbore(nod->dr,cod);
-                    else
-                        inserareInArbore(nod->st,cod);
-                }
-        }
-    else
-        {                                                       //primul nod inserat din arbore
-            nod=(Snod*)malloc(sizeof(Snod));
-            nod->codProdus=cod;
-            nod->st=nod->dr=0;
-        }
-}
-
-int cautare(Snod *nod, int cod)             //cauta nodul cu codul dat in arbore
-{
-    if(nod!=NULL)
-    {
-        if(nod->codProdus==cod)
-            return 1;
-        else
-        {
-            if(nod->codProdus<cod)
-                cautare(nod->dr,cod);
-            else
-                cautare(nod->st,cod);
-        }
-    }
-    return 0;
-}
-
-void construireArbore(Tlista lista)
-{
-    Tnod *temp=lista.primul;
-    while(temp)
-    {
-        inserareInArbore(nodCrt,temp->codProdus);        //pe masura ce parcurge lista insereaza codurile produselor in arborele binar de cautare
-        temp=temp->urm;
-    }
-}
-*/
-
 
 //FUNCTII PENTRU LISTA
 
@@ -193,12 +137,12 @@ void initializareLista(Tlista *lista)               //initializeaza primul si ul
 {
     lista->primul=lista->ultimul=NULL;
 }
+
 void esteNull(Tnod *x)                              //verifica daca un nod este nul
 {
-    if (x == NULL)
+    if (x==NULL)
     {
         printf("\nEROARE ALOCARE MEMORIE!\n");
-        system("pause");
         exit(0);
     }
 }
@@ -208,9 +152,9 @@ Tnod *cautaProdusInLista(Tlista *lista, char *nume)            //cauta produsul 
     Tnod *temp = lista->primul;
     while (temp)
     {
-        if (strcmp(nume, temp->numeProdus) == 0)
+        if(strcmp(nume,temp->numeProdus)==0)
             return temp;
-        temp = temp->urm;
+        temp=temp->urm;
     }
     return NULL;
 }
@@ -218,10 +162,10 @@ Tnod *cautaProdusInLista(Tlista *lista, char *nume)            //cauta produsul 
 int adaugaProdusInLista(Tlista *lista, int cod, char *denumire, float pret)     //adauga produsul cu codul, denumirea si pretul date in lista
 {
     Tnod *adr = cautaProdusInLista(lista, denumire);
-    if (adr == NULL)
+    if (adr==NULL)
     {
         Tnod *NewNod;
-        NewNod = (Tnod *)malloc(sizeof(Tnod));
+        NewNod=(Tnod *)malloc(sizeof(Tnod));
         esteNull(NewNod);
         NewNod->codProdus=cod;
         NewNod->cantitateProdus=1;
@@ -239,22 +183,22 @@ int adaugaProdusInLista(Tlista *lista, int cod, char *denumire, float pret)     
             lista->primul = NewNod;
             return 1;
         }
-        else if (lista->ultimul->codProdus < cod)                //adaugare la sfarsit
+        else if(lista->ultimul->codProdus < cod)                //adaugare la sfarsit
         {
-            lista->ultimul->urm = NewNod;
-            lista->ultimul = NewNod;
+            lista->ultimul->urm=NewNod;
+            lista->ultimul=NewNod;
             return 1;
         }
         else                                                    //adaugare la mijloc
         {
-            Tnod *temp = lista->primul, *prev;
-            while (temp != NULL && temp->codProdus > cod)
+            Tnod *temp=lista->primul, *prec;
+            while(temp!=NULL&&temp->codProdus > cod)
             {
-                prev = temp;
-                temp = temp->urm;
+                prec=temp;
+                temp=temp->urm;
             }
-            NewNod->urm = temp;
-            prev->urm = NewNod;
+            NewNod->urm=temp;
+            prec->urm=NewNod;
             return 1;
         }
     }
@@ -269,13 +213,13 @@ int adaugaProdusInLista(Tlista *lista, int cod, char *denumire, float pret)     
                 scanf(" %d",&optiune);
             }
                 if(optiune==1)
-                {   int cantitate;
+                {   unsigned int cantitate;
                     printf("Introduceti cantitatea dorita:\n");
-                    scanf(" %d",&cantitate);
+                    scanf(" %ld",&cantitate);
                     while(cantitate<=0 || cantitate>100)
                     {
                         printf("Cantitatea introdusa trebuie sa fie din intervalul (0,100]\n Introduceti alta cantitate:");
-                        scanf(" %d",&cantitate);
+                        scanf(" %ld",&cantitate);
                     }
                     adr->cantitateProdus=cantitate;
                     adr->pretTotal=adr->cantitateProdus*adr->pretProdus;
@@ -291,7 +235,7 @@ int stergereProdusDinLista(Tlista *lista, int cod)                              
 {
     Tnod *c, *a;
     c=lista->primul;
-    if(lista->primul->codProdus==cod)
+    if(lista->primul->codProdus==cod)                                                   //produsul se afla la inceputul listei
     {
         a=lista->primul;
         lista->primul=lista->primul->urm;
@@ -300,7 +244,7 @@ int stergereProdusDinLista(Tlista *lista, int cod)                              
     }
     else
     {
-        while(c->urm->codProdus!=cod)
+        while(c->urm->codProdus!=cod)                                       //cauta produsul in interiorul listei
         {
             c=c->urm;
             a=c->urm;
@@ -323,13 +267,14 @@ float totalPlata(Tlista lista)                                      //aduna toat
         sumaTotala=sumaTotala+temp->pretTotal;
         temp=temp->urm;
     }
+    sumaTotala=sumaTotala+pretLivrare;
     return sumaTotala;
 }
 
 void afisareLista(Tlista lista)                                                 //afiseaza toate nodurile din lista
 {
     Tnod *temp=lista.primul;
-    printf("COD PRODUS\tCANTITATE PRODUS\tPRET TOTAL PRODUS\tNUME PRODUS\n");
+    printf("COD PRODUS\tCANTITATE PRODUS\tPRET TOTAL PRODUS(RON)\tNUME PRODUS\n");
     while(temp)
     {
         printf("%d\t\t%d\t\t\t%0.2f\t\t\t%10s\n",temp->codProdus,temp->cantitateProdus,temp->pretTotal, temp->numeProdus);
@@ -348,12 +293,39 @@ void eliberareMemorie(Tlista *lista)                                            
     lista->primul=NULL;
 }
 
+//FUNCTII PENTRU HEAP
+
+void interschimba(float *a, float *b)
+{
+    float aux;
+    aux=*a;
+    *a=*b;
+    *b=aux;
+}
+
+void maxHeap(float tablou[], int n, int i)
+{
+    int tata=i;
+    int stanga=2*i+1;
+    int dreapta=2*i+1;
+    if(stanga<n && tablou[tata]<tablou[stanga])     //fiul stang este mai mare decat tatal
+        tata=stanga;
+    if(dreapta<n && tablou[tata]<tablou[dreapta])   //fiul drept este mai mare decat tatal
+        tata=dreapta;
+    if(tata!=i)             //tatal nu este radacina
+    {
+        interschimba(&tablou[i],&tablou[tata]);
+        maxHeap(tablou,n,tata);                     //apeleaza recursiv functia pentru subarbore
+    }
+}
+
+
 int main()
 {
     Tlista cosCumparaturi;
     struct Produs f[15];
     struct Produs b[15];
-    int optiune,ok=0,ok1=0,ok2=0;
+    int optiune,ok=0,ok1=0,ok2=0,i;
     citireTabelProduseFemei(f);
     citireTabelProduseBarbati(b);
     do{
@@ -369,14 +341,15 @@ int main()
         printf("\t\t\t 7. Afiseaza sumarul comenzii\n");
         printf("\t\t\t 8. Goleste cosul de cumparaturi\n");
         printf("\t\t\t 9. Proceseaza comanda\n");
-        printf("\t\t\t 10. Inchide aplicatia\n");
+        printf("\t\t\t 10. Afiseaza suma maxima platita la comenzile plasate\n");
+        printf("\t\t\t 11. Inchide aplicatia\n");
         printf("====================================================================================================================\n");
         printf("\n\n");
     	printf("Introduceti cifra corespunzatoare actiunii dorite:\n");
     	scanf("%d",&optiune);
-        while(optiune<1 || optiune>10)
+        while(optiune<1 || optiune>11)
         {
-            printf("EROARE: Valoarea introdusa trebuie sa fie din intervalul [1,9]!\n Introduceti alta cifra corespunzatoare actiunii dorite:\n");
+            printf("EROARE: Valoarea introdusa trebuie sa fie din intervalul [1,11]!\n Introduceti alta cifra corespunzatoare actiunii dorite:\n");
             scanf(" %d",&optiune);
         }
         switch(optiune)
@@ -414,7 +387,6 @@ int main()
                         fgets(denumire,30,stdin);
                         printf("Introduceti pretul produsului:\n");
                         scanf("%f",&pret);
-                        //construireArbore(cosCumparaturi);
                         if(adaugaProdusInLista(&cosCumparaturi,cod,denumire,pret))
                             {   printf("Produsul cu codul %d a fost adaugat cu succes in cos!\n",cod);
                                 ok2=1;
@@ -451,9 +423,10 @@ int main()
             case 7: if(ok&&ok1)
                       {
                         sumarComanda();
-                        printf("Produsele adaugate in cos sunt:\n");
+                        printf("\nProdusele adaugate in cos sunt:\n");
                         afisareLista(cosCumparaturi);
-                        printf("TOTAL PLATA: %.2f\n",totalPlata(cosCumparaturi));
+                        printf("TOTAL PLATA: %.2f RON\n",totalPlata(cosCumparaturi));
+                        sumeHeap[dim++]=totalPlata(cosCumparaturi);                                  //adauga suma totala in vector
                       }
                     else if(ok==0)
                         printf("Cosul de cumparaturi nu a fost initializat! Alegeti optiunea 1.\n");
@@ -480,10 +453,15 @@ int main()
                     else if(ok2==0)
                       printf("Nu exista produse adaugate in cos! Alegeti optiunea 3 pentru a adauga produse in cos.\n");
                     break;
-            case 10: exit(1);
-                     printf("Rularea aplicatiei a fost oprita.\n");
+            case 10: for(i=dim/2-1;i>=0;i--)
+                        maxHeap(sumeHeap,dim,i);                                    //creeaza heap-ul cu elementele vectorului sumeHeap
+                     printf("Suma maxima platita este de %.2f RON\n",sumeHeap[0]);  //afiseaza primul element(radacina heap-ului) al vectorului, adica cea mai mare valoare
+                     break;
+            case 11: printf("Rularea aplicatiei a fost oprita.\n");
+                     exit(1);
                      break;
         }
-    }while(optiune>=1 && optiune<=10);
+    }while(optiune>=1 && optiune<=11);
+    return 0;
 }
 
